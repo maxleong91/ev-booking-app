@@ -1,17 +1,30 @@
 
 import { useState } from "react";
 
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const locations = ["A", "B", "Clubhouse"];
+const locations = ["Tower A", "Tower B", "Clubhouse"];
+
+const generateTimeOptions = () => {
+  const options = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 30) {
+      const hour = h.toString().padStart(2, "0");
+      const minute = m.toString().padStart(2, "0");
+      options.push(`${hour}:${minute}`);
+    }
+  }
+  return options;
+};
+
+const timeOptions = generateTimeOptions();
 
 export default function Home() {
   const [bookings, setBookings] = useState([]);
   const [form, setForm] = useState({
     name: "",
-    day: "Mon",
-    location: "A",
-    start: "08:00",  // default valid time
-    end: "09:00",    // default valid time
+    date: new Date().toISOString().split("T")[0],
+    location: "Tower A",
+    start: "00:00",
+    end: "00:00",
   });
 
   const handleChange = (e) => {
@@ -21,7 +34,13 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setBookings([...bookings, form]);
-    setForm({ name: "", day: "Mon", location: "A", start: "08:00", end: "09:00" });
+    setForm({
+      name: "",
+      date: new Date().toISOString().split("T")[0],
+      location: "Tower A",
+      start: "00:00",
+      end: "00:00",
+    });
   };
 
   return (
@@ -37,14 +56,18 @@ export default function Home() {
           required
           style={{ width: "100%", marginBottom: 10 }}
         />
-        <div>
-          <select name="day" value={form.day} onChange={handleChange}>
-            {days.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
+        <div style={{ marginBottom: 10 }}>
+          <label>Date:</label>
+          <input
+            type="date"
+            name="date"
+            value={form.date}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <label>Charger:</label>
           <select name="location" value={form.location} onChange={handleChange}>
             {locations.map((loc) => (
               <option key={loc} value={loc}>
@@ -53,17 +76,34 @@ export default function Home() {
             ))}
           </select>
         </div>
-        <div>
-          <input type="time" name="start" value={form.start} onChange={handleChange} required />
-          <input type="time" name="end" value={form.end} onChange={handleChange} required />
+        <div style={{ marginBottom: 10 }}>
+          <label>Start Time:</label>
+          <select name="start" value={form.start} onChange={handleChange} required>
+            {timeOptions.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div style={{ marginBottom: 10 }}>
+          <label>End Time:</label>
+          <select name="end" value={form.end} onChange={handleChange} required>
+            <option value="Overnight">Overnight</option>
+            {timeOptions.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
         </div>
         <button type="submit">Book</button>
       </form>
 
-      <ul>
+      <ul style={{ marginTop: 20 }}>
         {bookings.map((b, i) => (
           <li key={i}>
-            {b.name} booked {b.location} on {b.day} from {b.start} to {b.end}
+            {b.name} booked {b.location} on {b.date} from {b.start} to {b.end}
           </li>
         ))}
       </ul>
