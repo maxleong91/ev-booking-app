@@ -10,8 +10,8 @@ export default function Home() {
     name: "",
     day: "Mon",
     location: "A",
-    start: "",
-    end: "",
+    start: "08:00",  // default valid time
+    end: "09:00",    // default valid time
   });
 
   const handleChange = (e) => {
@@ -21,7 +21,7 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setBookings([...bookings, form]);
-    setForm({ name: "", day: "Mon", location: "A", start: "", end: "" });
+    setForm({ name: "", day: "Mon", location: "A", start: "08:00", end: "09:00" });
   };
 
   return (
