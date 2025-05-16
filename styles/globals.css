@@ -1,1 +1,5 @@
-body { font-family: Calibri; }
+
+body {
+  font-family: Calibri, sans-serif;
+  font-size: 18px;
+}
