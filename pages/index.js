@@ -23,6 +23,11 @@ const generateTimeOptions = (startHour = 9, endHour = 23) => {
 const timeOptions = generateTimeOptions();
 const endTimeOptions = [{ value: "Overnight", label: "Overnight" }, ...timeOptions];
 
+const formatDateWithDay = (dateStr) => {
+  const options = { day: "2-digit", month: "short", year: "numeric", weekday: "long" };
+  return new Date(dateStr).toLocaleDateString("en-GB", options);
+};
+
 export default function Home() {
   const [bookings, setBookings] = useState([]);
   const [form, setForm] = useState({
@@ -51,7 +56,7 @@ export default function Home() {
 
   return (
     <div style={{ padding: 20, maxWidth: 600, margin: "0 auto", fontSize: "18px", fontFamily: "Calibri" }}>
-      <h1>EV Charger Booking</h1>
+      <h1>Emerald Hills EV Charger Booking 🚗🔋</h1>
 
       <form onSubmit={handleSubmit}>
         <input
@@ -109,7 +114,7 @@ export default function Home() {
       <ul style={{ marginTop: 20 }}>
         {bookings.map((b, i) => (
           <li key={i}>
-            {b.name} booked {b.location} on {b.date} from {b.start} to {b.end}
+            {b.name} booked {b.location} on {formatDateWithDay(b.date)} from {b.start} to {b.end}.
           </li>
         ))}
       </ul>
