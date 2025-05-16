@@ -3,19 +3,25 @@ import { useState } from "react";
 
 const locations = ["Tower A", "Tower B", "Clubhouse"];
 
-const generateTimeOptions = () => {
+const generateTimeOptions = (startHour = 9, endHour = 23) => {
   const options = [];
-  for (let h = 0; h < 24; h++) {
+  for (let h = startHour; h <= endHour; h++) {
     for (let m = 0; m < 60; m += 30) {
-      const hour = h.toString().padStart(2, "0");
+      const hour24 = h % 24;
+      const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
       const minute = m.toString().padStart(2, "0");
-      options.push(`${hour}:${minute}`);
+      const ampm = hour24 < 12 ? "AM" : "PM";
+      options.push({
+        value: `${hour24.toString().padStart(2, "0")}:${minute}`,
+        label: `${hour12}:${minute} ${ampm}`,
+      });
     }
   }
   return options;
 };
 
 const timeOptions = generateTimeOptions();
+const endTimeOptions = [{ value: "Overnight", label: "Overnight" }, ...timeOptions];
 
 export default function Home() {
   const [bookings, setBookings] = useState([]);
@@ -23,8 +29,8 @@ export default function Home() {
     name: "",
     date: new Date().toISOString().split("T")[0],
     location: "Tower A",
-    start: "00:00",
-    end: "00:00",
+    start: "09:00",
+    end: "09:00",
   });
 
   const handleChange = (e) => {
@@ -38,13 +44,13 @@ export default function Home() {
       name: "",
       date: new Date().toISOString().split("T")[0],
       location: "Tower A",
-      start: "00:00",
-      end: "00:00",
+      start: "09:00",
+      end: "09:00",
     });
   };
 
   return (
-    <div style={{ padding: 20, maxWidth: 600, margin: "0 auto" }}>
+    <div style={{ padding: 20, maxWidth: 600, margin: "0 auto", fontSize: "18px", fontFamily: "Calibri" }}>
       <h1>EV Charger Booking</h1>
 
       <form onSubmit={handleSubmit}>
@@ -54,7 +60,7 @@ export default function Home() {
           onChange={handleChange}
           placeholder="Your name"
           required
-          style={{ width: "100%", marginBottom: 10 }}
+          style={{ width: "100%", marginBottom: 10, fontSize: "18px", fontFamily: "Calibri" }}
         />
         <div style={{ marginBottom: 10 }}>
           <label>Date:</label>
@@ -64,11 +70,12 @@ export default function Home() {
             value={form.date}
             onChange={handleChange}
             required
+            style={{ fontSize: "18px", fontFamily: "Calibri" }}
           />
         </div>
         <div style={{ marginBottom: 10 }}>
           <label>Charger:</label>
-          <select name="location" value={form.location} onChange={handleChange}>
+          <select name="location" value={form.location} onChange={handleChange} style={{ fontSize: "18px", fontFamily: "Calibri" }}>
             {locations.map((loc) => (
               <option key={loc} value={loc}>
                 {loc}
@@ -78,26 +85,25 @@ export default function Home() {
         </div>
         <div style={{ marginBottom: 10 }}>
           <label>Start Time:</label>
-          <select name="start" value={form.start} onChange={handleChange} required>
+          <select name="start" value={form.start} onChange={handleChange} required style={{ fontSize: "18px", fontFamily: "Calibri" }}>
             {timeOptions.map((t) => (
-              <option key={t} value={t}>
-                {t}
+              <option key={t.value} value={t.value}>
+                {t.label}
               </option>
             ))}
           </select>
         </div>
         <div style={{ marginBottom: 10 }}>
           <label>End Time:</label>
-          <select name="end" value={form.end} onChange={handleChange} required>
-            <option value="Overnight">Overnight</option>
-            {timeOptions.map((t) => (
-              <option key={t} value={t}>
-                {t}
+          <select name="end" value={form.end} onChange={handleChange} required style={{ fontSize: "18px", fontFamily: "Calibri" }}>
+            {endTimeOptions.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.label}
               </option>
             ))}
           </select>
         </div>
-        <button type="submit">Book</button>
+        <button type="submit" style={{ fontSize: "20px", fontFamily: "Calibri", padding: "10px 20px" }}>Book</button>
       </form>
 
       <ul style={{ marginTop: 20 }}>
